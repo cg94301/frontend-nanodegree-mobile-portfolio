@@ -4,6 +4,7 @@ var minifyCSS = require('gulp-minify-css');
 var minifyHTML = require('gulp-minify-html');
 var rename = require('gulp-rename');
 var inlineSource = require('gulp-inline-source');
+var imgop = require('gulp-image-optimization');
 
 
 gulp.task('scripts', function() {
@@ -20,15 +21,22 @@ gulp.task('styles', function() {
     return stream;
 });
 
-//gulp.task('inlineSource', function() {
-//    var stream = gulp.src('./*.html')
-//        .pipe(inlineSource())
-//        .pipe(rename({
-//            suffix: ".inline"
-//        }))
-//        .pipe(gulp.dest('build'));
-//    return stream;
-//});
+gulp.task('images', function() {
+    gulp.src(['img/*.png','img/*.jpg'])
+        .pipe(imgop({
+            optimizationLevel: 5,
+            progressive: true,
+            interlaced: true
+        }))
+        .pipe(gulp.dest('build/img'));
+    gulp.src(['views/images/*.png','views/images/*.jpg'])
+        .pipe(imgop({
+            optimizationLevel: 5,
+            progressive: true,
+            interlaced: true
+        }))
+        .pipe(gulp.dest('build/views/images'));
+});
 
 gulp.task('compact', function() {
     var opts = {
@@ -42,6 +50,6 @@ gulp.task('compact', function() {
     return stream;
 });
 
-gulp.task('default',['scripts','styles','compact']);
+gulp.task('default',['scripts','styles','compact','images']);
 
 
