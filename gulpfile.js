@@ -8,17 +8,21 @@ var imgop = require('gulp-image-optimization');
 
 
 gulp.task('scripts', function() {
-    var stream = gulp.src('js/*.js')
+    gulp.src('js/*.js')
         .pipe(uglify())
         .pipe(gulp.dest('build/js'));
-    return stream;
+    gulp.src('views/js/*.js')
+        .pipe(uglify())
+        .pipe(gulp.dest('build/views/js'));
 });
 
 gulp.task('styles', function() {
-    var stream = gulp.src('css/*.css')
+    gulp.src('css/*.css')
         .pipe(minifyCSS())
         .pipe(gulp.dest('build/css'));
-    return stream;
+    gulp.src('views/css/*.css')
+        .pipe(minifyCSS())
+        .pipe(gulp.dest('build/views/css'));
 });
 
 gulp.task('images', function() {
@@ -43,13 +47,16 @@ gulp.task('compact', function() {
         conditionals: true,
         spare: true
     };
-    var stream = gulp.src('./*.html')
+    gulp.src('./*.html')
         .pipe(inlineSource())
         .pipe(minifyHTML(opts))
         .pipe(gulp.dest('build'));
-    return stream;
+    gulp.src('./views/pizza.html')
+        .pipe(inlineSource())
+        .pipe(minifyHTML(opts))
+        .pipe(gulp.dest('build/views'));
 });
 
-gulp.task('default',['scripts','styles','compact','images']);
+gulp.task('default',['scripts','styles','compact']);
 
 

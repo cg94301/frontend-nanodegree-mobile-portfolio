@@ -505,10 +505,9 @@ function updatePositions() {
     var items = document.querySelectorAll('.mover');
     /*
       cg: Move document.body.scrollTop out of the for loop to avoid read/write loop
-      Explanation: When scrollTop is accesssed the layout needs to be complete.
-      Every new write to style.left changes forcing a layout so that the next
-      scrollTop read has a completed layout.
-      This problem is flagged as 'Forced synchronous layout' in dev tools timeline
+      Explanation: scrollTop read requires complete layout. Write to style.left
+      changes layout. A subsequent scrollTop will force a new layout.
+      This problem is flagged as 'Forced synchronous layout' in dev tools timeline.
 
       To avoid this problem we need to batch read before we write, as desribed here:
 
@@ -528,7 +527,6 @@ function updatePositions() {
 
     var scrollpix = (document.body.scrollTop / 1250);
     for (var i = 0; i < items.length; i++) {
-        //var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
         var phase = Math.sin(scrollpix + (i % 5));
         items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
     }
@@ -547,16 +545,27 @@ function updatePositions() {
 window.addEventListener('scroll', updatePositions);
 
 // Generates the sliding pizzas when the page loads.
+/*
+  cg: The pizza generator puts 8 pizzas per row.
+  The rows are spaced 256px apart starting at row 0.
+  A very high resolution 32" display is 3840x2160.
+  If we want to cover the vertical resolution of 2160px
+  we need 2160 / 256 = 8.43. So 8 rows + row 0 = 9 rows
+  That means 8 * 9 = 72 pizzas should suffice.
+  With 72 pizzas we get these top positions per row:
+  0px, 256px, 512px, 768px, 1024px, 1280px, 1536px, 1792px, 2048px
+*/
 document.addEventListener('DOMContentLoaded', function() {
     var cols = 8;
     var s = 256;
-    for (var i = 0; i < 200; i++) {
+    for (var i = 0; i < 72; i++) {
         var elem = document.createElement('img');
         elem.className = 'mover';
         elem.src = "images/pizza.png";
         elem.style.height = "100px";
         elem.style.width = "73.333px";
         elem.basicLeft = (i % cols) * s;
+        console.log((Math.floor(i / cols) * s) + 'px');
         elem.style.top = (Math.floor(i / cols) * s) + 'px';
         document.querySelector("#movingPizzas1").appendChild(elem);
     }
