@@ -502,7 +502,8 @@ function updatePositions() {
     frame++;
     window.performance.mark("mark_start_frame");
 
-    var items = document.querySelectorAll('mover');
+    // cg: getElementsByClassName is faster
+    var items = document.getElementsByClassName('mover');
     /*
       cg: Move document.body.scrollTop out of the for loop to avoid read/write loop
       Explanation: scrollTop read requires complete layout. Write to style.left
@@ -524,6 +525,8 @@ function updatePositions() {
       aDiv.style.width = newWidth + 'px'; // Write
       aDiv.style.height = newHeight + 'px'; // Write
     */
+
+    console.log("updatePositions");
 
     var scrollpix = (document.body.scrollTop / 1250);
     for (var i = 0; i < items.length; i++) {
@@ -566,6 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
         elem.style.width = "73.333px";
         elem.basicLeft = (i % cols) * s;
         elem.style.top = (Math.floor(i / cols) * s) + 'px';
+        console.log(elem.basicLeft,elem.style.top);
         document.querySelector("#movingPizzas1").appendChild(elem);
     }
     updatePositions();
