@@ -2,6 +2,67 @@
 
 Your challenge, if you wish to accept it (and we sure hope you will), is to optimize this online portfolio for speed! In particular, optimize the critical rendering path and make this page render as quickly as possible by applying the techniques you've picked up in the [Critical Rendering Path course](https://www.udacity.com/course/ud884).
 
+---
+
+### My Changes
+
+NOTE TO SELF: To view this README.md offline, use Google Chrome extension Markdown Preview Plus from the Chrome Web Store. After installion check 'Allow access to file URLs' in chrome://extensions.
+
+NOTE: All changes made for this assignment are commented in the code. The comments have initials **cg**, e.g.
+* HTML: `<!-- cg: ... some comment ... -->`
+* JS: `// cg: ... some comment ...`
+* JS: `/* cg: ... some comment ... */`
+
+Split this project into development version and production version. The development version is the original directory structure from Udacity git project frontend-nanodegree-mobile-portfolio. The production version has the same directory structure, but lives under the top-level build directory.
+
+* Development version: $root/index.html
+* Production version: $root/build/index.html
+
+#### Part 1: My Changes to *Optimize PageSpeed Insights score for index.html*
+
+The optimized version is the production version at build/index.html. This version should be used to check performance in Google Page Speed Insights.
+
+##### Minify Source Code and Optimize Images
+
+Using GULP (A streaming build system) to automate the build flow. Gulp has great library support for optimization tasks like whitespace removal, inlining of code in HTML, image optimization among others. All of those mentioned are used here. See details in gulpfile.js, e.g. image optimization level is 5. 
+
+* gulp-uglify (minimizes JS)
+* gulp-minify-css
+* gulp-minify-html
+* gulp-inline-source
+* gulp-image-optimization
+
+The minified versions of all source files are saved under the build directory structure. The inlining option also does minimization on-the-fly.  
+
+##### Selectively Inline JS and CSS in HTML
+Inlining is simply done via the keyword **inline** in HTML. Like so: `<link href="css/style.css" rel="stylesheet" inline>`. See comments and keyword for where inlining was done in index.html.
+
+##### Use asynchronous loading of lower priority scripts
+
+If a script does not need to load immediately, simply use async keyword to delay load. For instance, use for Google Analytics, like so `<script async src="http://www.google-analytics.com/analytics.js"></script>`.
+
+##### Asynchronously load Google web fonts via webfontloader
+
+Cannot use async keyword for Google webfonts. Instead use webfontloader from https://github.com/typekit/webfontloader.git. Allows for asynchronous load of Google webfonts, like so `<script src="js/webfonts.js" inline></script>`. Where webfonts.js does this:
+
+```javascript
+WebFontConfig = {
+    google: {families: ['Open Sans Condensed:400,700']}
+};
+
+(function(d) {
+    var wf = d.createElement('script'), s = d.scripts[0];
+    wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+    s.parentNode.insertBefore(wf, s);
+})(document);
+```
+
+
+#### Part 2: My Changes to *Optimize Frames per Second in pizza.html*
+
+
+---
+
 To get started, check out the repository, inspect the code,
 
 ### Getting started
