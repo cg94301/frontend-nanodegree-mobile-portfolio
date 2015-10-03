@@ -82,7 +82,7 @@ The pizzeria.jpg is 2014x1536px originally, but displayed in the upper left corn
 
 ##### Minor improvements by using faster selectors
 
-Replace docment.querySelectorAll('.class') with document.getElementsByClassName('class').
+Replace `docment.querySelectorAll('.class')` with `document.getElementsByClassName('class')`.
 
 ##### Improve scroll performance
 
