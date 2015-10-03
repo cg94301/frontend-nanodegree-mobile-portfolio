@@ -1,5 +1,5 @@
 // cg: Asynchronously load Google web fonts
-// replacing   <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+// replace   <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
 // using https://github.com/typekit/webfontloader.git
 
 WebFontConfig = {
