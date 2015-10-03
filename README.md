@@ -80,8 +80,35 @@ WebFontConfig = {
 
 The pizzeria.jpg is 2014x1536px originally, but displayed in the upper left corner at much smaller size. When resizing the viewport one can notice a layout change at 991px, where the pic changes to 100% viewport width. That means the largest this pic will ever be is 991px in width. Resize pic so it is that wide, while proportionally keeping height. This is done in Mac Preview. Result is pizzeria-small.jpg. The image is further optimzed via gulp image optimizer before loading.
 
+##### Minor improvements by using faster selectors
+
+Replace docment.querySelectorAll('.class') with document.getElementsByClassName('class').
+
+##### Improve scroll performance
+
+The background pizzas move around when scrolling. The function that makes that happen is updatePositions. It loops through all background pizzas, which are identified by class mover. This loop in its original version causes a problem known as 'Forced synchronous layout'. This problem is flagged in dev tools timeline. It occurs when read and write accesses to the DOM occur inside the loop. Both trigger a layout. Here specifically the read document.body.scrollTop triggers a layout before scrollTop can be determined and $element.style.left is a write that triggers a layout. The solution is to move the read outside the loop and do a batch read.
+
+Here's a simple example describing this problem from http://gent.ilcore.com/2011/03/how-not-to-trigger-layout-in-webkit.html:
+```javascript
+      // Suboptimal, causes layout twice.
+      var newWidth = aDiv.offsetWidth + 10; // Read
+      aDiv.style.width = newWidth + 'px'; // Write
+      var newHeight = aDiv.offsetHeight + 10; // Read
+      aDiv.style.height = newHeight + 'px'; // Write
+
+      // Better, only one layout.
+      var newWidth = aDiv.offsetWidth + 10; // Read
+      var newHeight = aDiv.offsetHeight + 10; // Read
+      aDiv.style.width = newWidth + 'px'; // Write
+      aDiv.style.height = newHeight + 'px'; // Write
+```
+#### Doing math to reduce pizza count
+
+The background pizza generator generates 200 pizzas. This seems excessive even for the largest displays. The pizza generator puts 8 pizzas per row. The rows are spaced 256px apart starting at row 0. A very high resolution 32" display is 3840x2160. If we want to cover the vertical resolution of 2160px we need 2160 / 256 = 8.43. So 8 rows + row 0 = 9 rows. That means 8 * 9 = 72 pizzas should suffice. With 72 pizzas we get these top positions per row: 0px, 256px, 512px, 768px, 1024px, 1280px, 1536px, 1792px, 2048px. This could be further optimized by reading the viewport height.
+
 #### End of My Changes
 ---
+#### Udacity:
 
 To get started, check out the repository, inspect the code,
 
