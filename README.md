@@ -8,11 +8,13 @@ Your challenge, if you wish to accept it (and we sure hope you will), is to opti
 
 NOTE TO SELF: To view this README.md offline, use Google Chrome extension Markdown Preview Plus from the Chrome Web Store. After installion check 'Allow access to file URLs' in chrome://extensions.
 
-NOTE: All changes made for this assignment are commented in the code. The comments have initials **cg**, e.g.
+##### Comments
+All changes made for this assignment are commented in the code. The comments have initials **cg**, e.g.
 * HTML: `<!-- cg: ... some comment ... -->`
 * JS: `// cg: ... some comment ...`
 * JS: `/* cg: ... some comment ... */`
 
+##### Directory Structure
 Split this project into development version and production version. The development version is the original directory structure from Udacity git project frontend-nanodegree-mobile-portfolio. The production version has the same directory structure, but lives under the top-level build directory.
 
 * Development version: $root/index.html
@@ -21,6 +23,10 @@ Split this project into development version and production version. The developm
 #### Part 1: My Changes to *Optimize PageSpeed Insights score for index.html*
 
 The optimized version is the production version at build/index.html. This version should be used to check performance in Google Page Speed Insights.
+
+##### Manually resize images
+
+The original pizzeria.jpg is 2048x1536. This is way too large for displaying a simple thumbnail at top-level. Reduced size to 100x75 in pizzeria-smaller.jpg. This was done in MAC Preview. Image will be further optimzed via gulp image optimizer. See next step.
 
 ##### Minify Source Code and Optimize Images
 
@@ -32,7 +38,17 @@ Using GULP (A streaming build system) to automate the build flow. Gulp has great
 * gulp-inline-source
 * gulp-image-optimization
 
-The minified versions of all source files are saved under the build directory structure. The inlining option also does minimization on-the-fly.  
+The minified versions of all source files are saved under the build directory structure. The inlining option also does minimization on-the-fly. Image optimization is really only needed once. Therefore this is a separate target in gulp.
+
+Optimize source code:
+```
+$> gulp
+```
+
+Optimize images:
+```
+$> gulp images
+```
 
 ##### Selectively Inline JS and CSS in HTML
 Inlining is simply done via the keyword **inline** in HTML. Like so: `<link href="css/style.css" rel="stylesheet" inline>`. See comments and keyword for where inlining was done in index.html.
@@ -60,7 +76,11 @@ WebFontConfig = {
 
 #### Part 2: My Changes to *Optimize Frames per Second in pizza.html*
 
+##### Manually resize images
 
+The pizzeria.jpg is 2014x1536px originally, but displayed in the upper left corner at much smaller size. When resizing the viewport one can notice a layout change at 991px, where the pic changes to 100% viewport width. That means the largest this pic will ever be is 991px in width. Resize pic so it is that wide, while proportionally keeping height. This is done in Mac Preview. Result is pizzeria-small.jpg. The image is further optimzed via gulp image optimizer before loading.
+
+#### End of My Changes
 ---
 
 To get started, check out the repository, inspect the code,
