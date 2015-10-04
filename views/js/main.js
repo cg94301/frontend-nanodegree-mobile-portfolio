@@ -449,11 +449,17 @@ var resizePizzas = function(size) {
     }
 
     // Iterates through pizza elements on the page and changes their widths
+    /* cg: Batch get all pizzas outside the loop. Use faster access method
+       getElementsByClassName. Move determineDx and newidth calculation 
+       outside the loop. They are only needed once. This avois 'Forced 
+       synchronous layout' error */
+    var randomPizzas = document.getElementsByClassName('randomPizzaContainer');
+    var dx = determineDx(randomPizzas[0], size);
+    var newwidth = (randomPizzas[0].offsetWidth + dx) + 'px';
+
     function changePizzaSizes(size) {
-        for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-            var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-            var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-            document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+        for (var i = 0; i < randomPizzas.length; i++) {
+            randomPizzas[i].style.width = newwidth;
         }
     }
 
@@ -551,7 +557,6 @@ document.addEventListener('DOMContentLoaded', function() {
         elem.style.width = "73.333px";
         elem.basicLeft = (i % cols) * s;
         elem.style.top = (Math.floor(i / cols) * s) + 'px';
-        console.log(elem.basicLeft,elem.style.top);
         document.querySelector("#movingPizzas1").appendChild(elem);
     }
     updatePositions();
