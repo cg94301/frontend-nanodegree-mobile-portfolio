@@ -502,32 +502,14 @@ function updatePositions() {
     frame++;
     window.performance.mark("mark_start_frame");
 
-    // cg: getElementsByClassName is faster
+    // cg: getElementsByClassName is faster than document.querySelectorAll('.mover')
     var items = document.getElementsByClassName('mover');
     /*
-      cg: Move document.body.scrollTop out of the for loop to avoid read/write loop
+      cg: Move document.body.scrollTop read out of the for loop to avoid 
+      'Forced synchronous layout'. 
       Explanation: scrollTop read requires complete layout. Write to style.left
-      changes layout. A subsequent scrollTop will force a new layout.
-      This problem is flagged as 'Forced synchronous layout' in dev tools timeline.
-
-      To avoid this problem we need to batch read before we write, as desribed here:
-
-      // http://gent.ilcore.com/2011/03/how-not-to-trigger-layout-in-webkit.html
-      // Suboptimal, causes layout twice.
-      var newWidth = aDiv.offsetWidth + 10; // Read
-      aDiv.style.width = newWidth + 'px'; // Write
-      var newHeight = aDiv.offsetHeight + 10; // Read
-      aDiv.style.height = newHeight + 'px'; // Write
-
-      // Better, only one layout.
-      var newWidth = aDiv.offsetWidth + 10; // Read
-      var newHeight = aDiv.offsetHeight + 10; // Read
-      aDiv.style.width = newWidth + 'px'; // Write
-      aDiv.style.height = newHeight + 'px'; // Write
+      changes DOM. A subsequent scrollTop read will force a new layout.
     */
-
-    console.log("updatePositions");
-
     var scrollpix = (document.body.scrollTop / 1250);
     for (var i = 0; i < items.length; i++) {
         var phase = Math.sin(scrollpix + (i % 5));

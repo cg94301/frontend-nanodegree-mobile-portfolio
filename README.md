@@ -86,7 +86,7 @@ Replace `docment.querySelectorAll('.class')` with `document.getElementsByClassNa
 
 ##### Improve scroll performance
 
-The background pizzas move around when scrolling. The function that makes that happen is updatePositions. It loops through all background pizzas, which are identified by class mover. This loop in its original version causes a problem known as 'Forced synchronous layout'. This problem is flagged in dev tools timeline. It occurs when read and write accesses to the DOM occur inside the loop. Both trigger a layout. Here specifically the read document.body.scrollTop triggers a layout before scrollTop can be determined and $element.style.left is a write that triggers a layout. The solution is to move the read outside the loop and do a batch read.
+The background pizzas move around when scrolling. The function that makes that happen is updatePositions. It loops through all background pizzas, which are identified by class mover. This loop in its original version causes a problem known as 'Forced synchronous layout'. This problem is flagged in dev tools timeline. It occurs when read and write accesses occur inside the loop. Here specifically the read document.body.scrollTop triggers a layout before scrollTop can be determined and $element.style.left is a write to DOM, requiring layout before read. The solution is to move the read outside the loop.
 
 Here's a simple example describing this problem from http://gent.ilcore.com/2011/03/how-not-to-trigger-layout-in-webkit.html:
 ```javascript
@@ -102,6 +102,27 @@ Here's a simple example describing this problem from http://gent.ilcore.com/2011
       aDiv.style.width = newWidth + 'px'; // Write
       aDiv.style.height = newHeight + 'px'; // Write
 ```
+Code before:
+```javascript
+    for (var i = 0; i < items.length; i++) {
+        var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+        items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+    }
+```
+![Timeline](img/readme/shot2.png)
+
+Code after:
+```javascript
+    var scrollpix = (document.body.scrollTop / 1250);
+    for (var i = 0; i < items.length; i++) {
+        var phase = Math.sin(scrollpix + (i % 5));
+        items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+    }
+```
+
+![Timeline](img/readme/shot3.png)
+
+
 #### Doing math to reduce pizza count
 
 The background pizza generator generates 200 pizzas. This seems excessive even for the largest displays. The pizza generator puts 8 pizzas per row. The rows are spaced 256px apart starting at row 0. A very high resolution 32" display is 3840x2160. If we want to cover the vertical resolution of 2160px we need 2160 / 256 = 8.43. So 8 rows + row 0 = 9 rows. That means 8 * 9 = 72 pizzas should suffice. With 72 pizzas we get these top positions per row: 0px, 256px, 512px, 768px, 1024px, 1280px, 1536px, 1792px, 2048px. This could be further optimized by reading the viewport height.
