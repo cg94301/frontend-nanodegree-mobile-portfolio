@@ -122,6 +122,17 @@ Code after:
 
 ![Timeline](img/readme/shot3.png)
 
+#### Speedup Pizza resizing via slider
+
+Inside the function resizePizzas is a loop that iterates through all pizzas to resize them when the slider has changed their size. Inside this loop the variable tht holds all random pizzas is repetitively generated with costly access to querySelectorAll(".randomPizzaContainer"). Move this access outside the loop with a single access to getElementsByClassName('randomPizzaContainer'). More importantly, move call determineDx and newwidth calculations outside the loop. They are only needed once. This avoids 'Forced synchronous layout' error.
+
+Timeline before:
+
+![Timeline](img/readme/shot4.png)
+
+Timeline after:
+
+![Timeline](img/readme/shot5.png)
 
 #### Doing math to reduce pizza count
 
