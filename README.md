@@ -3,6 +3,29 @@
 Your challenge, if you wish to accept it (and we sure hope you will), is to optimize this online portfolio for speed! In particular, optimize the critical rendering path and make this page render as quickly as possible by applying the techniques you've picked up in the [Critical Rendering Path course](https://www.udacity.com/course/ud884).
 
 ---
+### How to Start
+
+#### Start Part 1
+
+Clone this repository onto your machine:
+
+```
+    $> git clone https://github.com/cg94301/frontend-nanodegree-mobile-portfolio.git
+    $> cd frontend-nanodegree-mobile-portfolio/build/
+    $> python -m SimpleHTTPServer 8080
+    $> ngrok http 8080
+```
+
+Important: The optimized version for Pagespeed Insights is $root/build/index.html.
+
+Open the URL displayed by ngrok (http version) in Google Pagespeed Insights at https://developers.google.com/speed/pagespeed/insights/.
+
+#### Start Part 2
+
+Open the URL displayed by ngrok (http version) in Google Chrome browser. Open developer tools. Click on the link for Cam's Pizzeria. Observe the reported page load time in the console. Scroll the page up and down. Observer the reported time to generate last 10 frames. Find the pizza size slider and resize pizzas. Observer time to resize pizzas in the console.
+
+To get an even more detailed view switch to the Timeline tab in dev tools. Then record a timeline for each of the above steps and notice FPS in frames view.
+
 
 ### My Changes
 
