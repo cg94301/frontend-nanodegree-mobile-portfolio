@@ -109,6 +109,8 @@ Replace `docment.querySelectorAll('.class')` with `document.getElementsByClassNa
 
 ##### Improve scroll performance
 
+###### Address Forced synchronous layout
+
 The background pizzas move around when scrolling. The function that makes that happen is updatePositions. It loops through all background pizzas, which are identified by class mover. This loop in its original version causes a problem known as 'Forced synchronous layout'. This problem is flagged in dev tools timeline. It occurs when read and write accesses occur inside the loop. Here specifically the read document.body.scrollTop triggers a layout before scrollTop can be determined and $element.style.left is a write to DOM, requiring layout before read. The solution is to move the read outside the loop.
 
 Here's a simple example describing this problem from http://gent.ilcore.com/2011/03/how-not-to-trigger-layout-in-webkit.html:
@@ -158,6 +160,23 @@ Further minor improvements can be achieved by doing this:
         items[i].style.left = items[i].basicLeft + phase[i%5] + 'px';
     }
 ```
+
+###### Promote elements to layers
+
+Set CSS backface-visibility property to hidden. Helps to promote DOM elements to layers. This removes the paint step. The browser can also take adventage of GPU while rendering that element. There are few other CSS properties that do the same thing like translateZ(0) or translate3d(0,0,0). These are all hacks, and will be repalaced with new CSS property will-change.
+
+(source: http://stackoverflow.com/questions/28511539/the-underlying-magic-of-webkit-backface-visibility)
+
+
+Timeline with paint step:
+
+![Timeline](img/readme/shot6.png)
+
+Timeline after promotion w/o paint step:
+
+![Timeline](img/readme/shot7.png)
+
+
 
 #### Speedup Pizza resizing via slider
 

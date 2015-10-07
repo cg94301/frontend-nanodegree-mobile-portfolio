@@ -33,6 +33,10 @@ form {
   position: fixed;
   width: 256px;
   z-index: -1;
+  /* cg: Set backface-visibility hidden to 
+  stop paint happening on scroll */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .randomPizzaContainer {

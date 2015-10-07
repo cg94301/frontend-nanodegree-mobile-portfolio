@@ -527,7 +527,7 @@ function updatePositions() {
 
     //console.log(phase);
 
-    for (var i = 0; i < items.length; i++) {
+    for (i=0; i<items.length; i++) {
         //var phase = Math.sin(scrollpix + (i % 5));
         //items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
         items[i].style.left = items[i].basicLeft + phase[i%5] + 'px';
