@@ -5,6 +5,7 @@ var minifyHTML = require('gulp-minify-html');
 var rename = require('gulp-rename');
 var inlineSource = require('gulp-inline-source');
 var imgop = require('gulp-image-optimization');
+var jshint = require('gulp-jshint');
 
 
 gulp.task('scripts', function() {
@@ -57,6 +58,12 @@ gulp.task('compact', function() {
         .pipe(gulp.dest('build/views'));
 });
 
-gulp.task('default',['scripts','styles','compact']);
+gulp.task('lint', function() {
+    return gulp.src('views/js/*.js')
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
+});
+
+gulp.task('default',['scripts','styles','compact','lint']);
 
 
