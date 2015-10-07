@@ -145,6 +145,20 @@ Code after:
 
 ![Timeline](img/readme/shot3.png)
 
+Further minor improvements can be achieved by doing this:
+
+```javascript
+    var phase = [];
+
+    for (var i=0; i<5 ; i++) {
+        phase.push(Math.sin(scrollpix + i ) * 100);
+    }
+
+    for (var i = 0; i < items.length; i++) {
+        items[i].style.left = items[i].basicLeft + phase[i%5] + 'px';
+    }
+```
+
 #### Speedup Pizza resizing via slider
 
 Inside the function resizePizzas is a loop that iterates through all pizzas to resize them when the slider has changed their size. Inside this loop the variable tht holds all random pizzas is repetitively generated with costly access to querySelectorAll(".randomPizzaContainer"). Move this access outside the loop with a single access to getElementsByClassName('randomPizzaContainer'). More importantly, move call determineDx and newwidth calculations outside the loop. They are only needed once. This avoids 'Forced synchronous layout' error.
@@ -157,9 +171,43 @@ Timeline after:
 
 ![Timeline](img/readme/shot5.png)
 
+#### Minor improvement to load performance
+
+Minor improvements can be achieved by moving getElementById outside the loop:
+
+From:
+
+```javascript
+for (var i = 2; i < 100; i++) {
+    var pizzasDiv = document.getElementById("randomPizzas"); 
+    pizzasDiv.appendChild(pizzaElementGenerator(i));
+}
+```
+
+To:
+
+```javascript
+var pizzasDiv = document.getElementById("randomPizzas"); 
+for (var i = 2; i < 100; i++) {
+    pizzasDiv.appendChild(pizzaElementGenerator(i));
+}
+```
+
 #### Doing math to reduce pizza count
 
-The background pizza generator generates 200 pizzas. This seems excessive even for the largest displays. The pizza generator puts 8 pizzas per row. The rows are spaced 256px apart starting at row 0. A very high resolution 32" display is 3840x2160. If we want to cover the vertical resolution of 2160px we need 2160 / 256 = 8.43. So 8 rows + row 0 = 9 rows. That means 8 * 9 = 72 pizzas should suffice. With 72 pizzas we get these top positions per row: 0px, 256px, 512px, 768px, 1024px, 1280px, 1536px, 1792px, 2048px. This could be further optimized by reading the viewport height.
+The background pizza generator generates 200 pizzas. This seems excessive even for the largest displays. The pizza generator puts 8 pizzas per row. The rows are spaced 256px apart starting at row 0. A very high resolution 32" display is 3840x2160. If we want to cover the vertical resolution of 2160px we need 2160 / 256 = 8.43. So 8 rows + row 0 = 9 rows. That means 8 * 9 = 72 pizzas should suffice. With 72 pizzas we get these top positions per row: 0px, 256px, 512px, 768px, 1024px, 1280px, 1536px, 1792px, 2048px. 
+
+This could be further optimized by calculating the number of visible rows going by the viewport height. Like so:
+
+```javascript
+   ...
+   var height = window.innerHeight;
+   var count = (Math.floor( height / 256 ) + 1) * 8;
+   for (var i = 0; i < count; i++) {
+   ...
+```
+
+Slight disadvantage of latter method is that a reload is required if the user resizes the window. 
 
 #### End of My Changes
 ---
