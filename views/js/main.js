@@ -475,8 +475,9 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
+/* cg: Move getElementById outside the loop for minor improvement */
+var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
-    var pizzasDiv = document.getElementById("randomPizzas");
     pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -517,9 +518,19 @@ function updatePositions() {
       changes DOM. A subsequent scrollTop read will force a new layout.
     */
     var scrollpix = (document.body.scrollTop / 1250);
+
+    var phase = [];
+
+    for (var i=0; i<5 ; i++) {
+        phase.push(Math.sin(scrollpix + i ) * 100);
+    }
+
+    //console.log(phase);
+
     for (var i = 0; i < items.length; i++) {
-        var phase = Math.sin(scrollpix + (i % 5));
-        items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+        //var phase = Math.sin(scrollpix + (i % 5));
+        //items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+        items[i].style.left = items[i].basicLeft + phase[i%5] + 'px';
     }
 
     // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -539,17 +550,16 @@ window.addEventListener('scroll', updatePositions);
 /*
   cg: The pizza generator puts 8 pizzas per row.
   The rows are spaced 256px apart starting at row 0.
-  A very high resolution 32" display is 3840x2160.
-  If we want to cover the vertical resolution of 2160px
-  we need 2160 / 256 = 8.43. So 8 rows + row 0 = 9 rows
-  That means 8 * 9 = 72 pizzas should suffice.
-  With 72 pizzas we get these top positions per row:
-  0px, 256px, 512px, 768px, 1024px, 1280px, 1536px, 1792px, 2048px
+  Get the innerHeight of the window and calculate
+  how many rows are visible. Have at least one row.
+  Multiply rows by 8.
 */
 document.addEventListener('DOMContentLoaded', function() {
     var cols = 8;
     var s = 256;
-    for (var i = 0; i < 72; i++) {
+    var height = window.innerHeight;
+    var count = (Math.floor( height / 256 ) + 1) * 8;
+    for (var i = 0; i < count; i++) {
         var elem = document.createElement('img');
         elem.className = 'mover';
         elem.src = "images/pizza.png";
